@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Acc Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .hidden {
+            display: none;
+        }
+        #avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <header class="bg-red-600 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">SHOP GAME</h1>
+            <nav>
+                <a href="#" class="px-4">Trang Chủ</a>
+                <a href="#services" class="px-4">Dịch Vụ</a>
+                <a href="#account" class="px-4">Tài Khoản</a>
+                <a href="#contact" class="px-4">Liên Hệ</a>
+            </nav>
+            <div class="flex items-center">
+                <button onclick="topUp()" class="bg-yellow-500 px-4 py-2 rounded-lg">Nạp Tiền</button>
+                <button onclick="toggleLoginModal()" id="loginBtn" class="bg-blue-500 px-4 py-2 rounded-lg">Đăng Nhập</button>
+                <button onclick="toggleRegisterModal()" id="registerBtn" class="bg-green-500 px-4 py-2 rounded-lg">Đăng Ký</button>
+                <img id="avatar" src="https://via.placeholder.com/40" alt="Avatar" class="hidden ml-4">
+                <span id="accountBalance" class="ml-4 hidden text-white">Số dư: 0đ</span>
+                <button onclick="logout()" id="logoutBtn" class="bg-red-500 px-4 py-2 rounded-lg hidden ml-4">Đăng Xuất</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Modal đăng nhập -->
+    <div id="loginModal" class="modal flex">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl mb-4">Đăng Nhập</h2>
+            <form id="loginForm" onsubmit="event.preventDefault(); login();">
+                <div class="mb-4">
+                    <label for="loginUsername" class="block text-sm font-medium">Tên Đăng Nhập</label>
+                    <input type="text" id="loginUsername" class="border border-gray-300 p-2 w-full rounded" required>
+                </div>
+                <div class="mb-4">
+                    <label for="loginPassword" class="block text-sm font-medium">Mật Khẩu</label>
+                    <input type="password" id="loginPassword" class="border border-gray-300 p-2 w-full rounded" required>
+                </div>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Đăng Nhập</button>
+                <button type="button" onclick="toggleLoginModal()" class="bg-red-500 text-white px-4 py-2 rounded mt-2">Đóng</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal đăng ký -->
+    <div id="registerModal" class="modal flex">
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h2 class="text-2xl mb-4">Đăng Ký</h2>
+            <form id="registerForm" onsubmit="event.preventDefault(); register();">
+                <div class="mb-4">
+                    <label for="registerUsername" class="block text-sm font-medium">Tên Đăng Nhập</label>
+                    <input type="text" id="registerUsername" class="border border-gray-300 p-2 w-full rounded" required>
+                </div>
+                <div class="mb-4">
+                    <label for="registerPassword" class="block text-sm font-medium">Mật Khẩu</label>
+                    <input type="password" id="registerPassword" class="border border-gray-300 p-2 w-full rounded" required>
+                </div>
+                <div class="mb-4">
+                    <label for="registerConfirmPassword" class="block text-sm font-medium">Xác Nhận Mật Khẩu</label>
+                    <input type="password" id="registerConfirmPassword" class="border border-gray-300 p-2 w-full rounded" required>
+                </div>
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Đăng Ký</button>
+                <button type="button" onclick="toggleRegisterModal()" class="bg-red-500 text-white px-4 py-2 rounded mt-2">Đóng</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="bg-cover bg-center h-64 text-white flex items-center justify-center" style="background-image: url('https://via.placeholder.com/1920x400');">
+        <h2 class="text-4xl font-bold bg-black bg-opacity-50 p-4">Chào mừng đến với Shop Acc Game</h2>
+    </div>
+
+    <section id="account" class="py-10 bg-gray-200">
+        <div class="container mx-auto">
+            <h2 class="text-2xl font-bold text-center mb-6">Quản Lý Tài Khoản của Bạn</h2>
+            <div class="mb-6">
+                <h3 class="text-xl font-semibold">Nạp Tiền Vào Tài Khoản</h3>
+                <form onsubmit="event.preventDefault(); topUpAccount();">
+                    <div class="mb-4">
+                        <label for="topUpValue" class="block text-sm font-medium">Số Tiền (đ)</label>
+                        <input type="number" id="topUpValue" class="border border-gray-300 p-2 w-full rounded" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="topUpNetwork" class="block text-sm font-medium">Nhà Mạng</label>
+                        <input type="text" id="topUpNetwork" class="border border-gray-300 p-2 w-full rounded" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="topUpCardCode" class="block text-sm font-medium">Mã Thẻ</label>
+                        <input type="text" id="topUpCardCode" class="border border-gray-300 p-2 w-full rounded" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="topUpSerial" class="block text-sm font-medium">Số Seri</label>
+                        <input type="text" id="topUpSerial" class="border border-gray-300 p-2 w-full rounded" required>
+                    </div>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Nạp Tiền</button>
+                </form>
+            </div>
+
+            <!-- Lịch sử giao dịch nạp tiền -->
+            <div id="transactionHistory" class="mt-6 bg-white p-4 rounded-lg shadow-lg">
+                <h3 class="text-xl font-semibold mb-4">Lịch Sử Giao Dịch Nạp Tiền</h3>
+                <table class="table-auto w-full">
+                    <thead>
+                        <tr>
+                            <th class="border px-4 py-2">Số Tiền</th>
+                            <th class="border px-4 py-2">Trạng Thái</th>
+                            <th class="border px-4 py-2">Ngày Nạp</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionList">
+                        <!-- Lịch sử giao dịch sẽ hiển thị ở đây -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Ô Duyệt Thẻ cho Admin -->
+            <div id="adminSection" class="hidden mt-6 p-4 bg-white rounded-lg shadow-lg">
+                <h3 class="text-xl font-semibold mb-4">Quản Lý Nạp Thẻ</h3>
+                <input type="text" id="searchUsername" class="border border-gray-300 p-2 w-full mb-4 rounded" placeholder="Tìm kiếm tài khoản..." oninput="searchUser()">
+                <table class="table-auto w-full">
+                    <thead>
+                        <tr>
+                            <th class="border px-4 py-2">Tên Tài Khoản</th>
+                            <th class="border px-4 py-2">Số Tiền</th>
+                            <th class="border px-4 py-2">Trạng Thái</th>
+                            <th class="border px-4 py-2">Duyệt</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topUpList">
+                        <!-- Các giao dịch nạp thẻ sẽ hiển thị ở đây -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let users = {
+            'khang112220132013': { username: 'khang112220132013', password: 'khang1122', balance: 0, isAdmin: true },
+        };
+
+        let topUpRequests = [
+            { username: 'user1', amount: 100000, status: 'Chờ duyệt' },
+            { username: 'user2', amount: 50000, status: 'Chờ duyệt' },
+        ];
+
+        let transactionHistory = [];
+
+        let loggedInUsername = '';
+
+        function showTransactionHistory() {
+            const list = document.getElementById('transactionList');
+            list.innerHTML = '';  // Xóa nội dung cũ
+
+            transactionHistory.forEach(transaction => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="border px-4 py-2">${transaction.amount}đ</td>
+                    <td class="border px-4 py-2">${transaction.status}</td>
+                    <td class="border px-4 py-2">${transaction.date}</td>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function showTopUpRequests() {
+            const list = document.getElementById('topUpList');
+            list.innerHTML = '';  // Xóa nội dung cũ
+
+            topUpRequests.forEach((request, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="border px-4 py-2">${request.username}</td>
+                    <td class="border px-4 py-2">${request.amount}đ</td>
+                    <td class="border px-4 py-2">${request.status}</td>
+                    <td class="border px-4 py-2">
+                        ${users[loggedInUsername]?.isAdmin ? ` 
+                            <button onclick="approveTopUp(${index})" class="bg-green-500 text-white px-4 py-2 rounded">Duyệt</button>
+                            <button onclick="rejectTopUp(${index})" class="bg-red-500 text-white px-4 py-2 rounded ml-2">Từ Chối</button>
+                        ` : ''} 
+                    </td>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function searchUser() {
+            const searchValue = document.getElementById('searchUsername').value.toLowerCase();
+            const filteredRequests = topUpRequests.filter(request => request.username.toLowerCase().includes(searchValue));
+            const list = document.getElementById('topUpList');
+            list.innerHTML = '';
+
+            filteredRequests.forEach((request, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="border px-4 py-2">${request.username}</td>
+                    <td class="border px-4 py-2">${request.amount}đ</td>
+                    <td class="border px-4 py-2">${request.status}</td>
+                    <td class="border px-4 py-2">
+                        ${users[loggedInUsername]?.isAdmin ? `
+                            <button onclick="approveTopUp(${index})" class="bg-green-500 text-white px-4 py-2 rounded">Duyệt</button>
+                            <button onclick="rejectTopUp(${index})" class="bg-red-500 text-white px-4 py-2 rounded ml-2">Từ Chối</button>
+                        ` : ''}
+                    </td>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function approveTopUp(index) {
+            if (users[loggedInUsername]?.isAdmin) {
+                topUpRequests[index].status = 'Đã duyệt';
+                users[topUpRequests[index].username].balance += topUpRequests[index].amount;
+                
+                // Lưu vào lịch sử giao dịch
+                transactionHistory.push({
+                    amount: topUpRequests[index].amount,
+                    status: 'Thành công',
+                    date: new Date().toLocaleString()
+                });
+
+                alert('Duyệt nạp thẻ thành công!');
+                showTopUpRequests();
+                showTransactionHistory();
+            }
+        }
+
+        function rejectTopUp(index) {
+            if (users[loggedInUsername]?.isAdmin) {
+                topUpRequests[index].status = 'Từ chối';
+                alert('Từ chối nạp thẻ!');
+                showTopUpRequests();
+            }
+        }
+
+        function topUp() {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        function toggleLoginModal() {
+            const modal = document.getElementById('loginModal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function toggleRegisterModal() {
+            const modal = document.getElementById('registerModal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function login() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (users[username] && users[username].password === password) {
+                loggedInUsername = username;
+                alert('Đăng nhập thành công!');
+                updateUI();
+                toggleLoginModal();
+            } else {
+                alert('Thông tin đăng nhập sai!');
+            }
+        }
+
+        function register() {
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+            if (password === confirmPassword) {
+                users[username] = { username, password, balance: 0, isAdmin: false };
+                alert('Đăng ký thành công!');
+                toggleRegisterModal();
+            } else {
+                alert('Mật khẩu không khớp!');
+            }
+        }
+
+        function logout() {
+            loggedInUsername = '';
+            updateUI();
+        }
+
+        function updateUI() {
+            const avatar = document.getElementById('avatar');
+            const accountBalance = document.getElementById('accountBalance');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const adminSection = document.getElementById('adminSection');
+
+            if (loggedInUsername) {
+                avatar.src = `https://www.gravatar.com/avatar/${loggedInUsername}`;
+                avatar.classList.remove('hidden');
+                accountBalance.textContent = `Số dư: ${users[loggedInUsername].balance}đ`;
+                accountBalance.classList.remove('hidden');
+                logoutBtn.classList.remove('hidden');
+                loginBtn.classList.add('hidden');
+                registerBtn.classList.add('hidden');
+
+                if (users[loggedInUsername]?.isAdmin) {
+                    adminSection.classList.remove('hidden');
+                }
+
+                showTransactionHistory();
+            } else {
+                avatar.classList.add('hidden');
+                accountBalance.classList.add('hidden');
+                logoutBtn.classList.add('hidden');
+                loginBtn.classList.remove('hidden');
+                registerBtn.classList.remove('hidden');
+                adminSection.classList.add('hidden');
+            }
+        }
+
+        updateUI();
+    </script>
+</body>
+</html>
